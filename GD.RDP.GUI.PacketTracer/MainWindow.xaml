@@ -1,0 +1,176 @@
+﻿<Window x:Class="GD.RDP.GUI.PacketTracer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vms="clr-namespace:GD.RDP.GUI.PacketTracer.ViewModels"
+        Title="GD.RDP.GUI.PacketTracer" Height="720" Width="1400"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <Style x:Key="{x:Type ToolTip}" TargetType="{x:Type ToolTip}">
+            <Setter Property="FontFamily" Value="Consolas"/>
+        </Style>
+    </Window.Resources>
+    <Window.DataContext>
+        <vms:ConnectionViewModel></vms:ConnectionViewModel>
+    </Window.DataContext>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open"/>
+                <MenuItem Header="_Close"/>
+                <MenuItem Header="_Save"/>
+            </MenuItem>
+        </Menu>
+        <DockPanel LastChildFill="True">
+            <Grid Width="1150">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="160" />
+                    <RowDefinition/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0">
+                    <StackPanel 
+                    Orientation="Horizontal"
+                >
+                        <GroupBox 
+                        Width="300"
+                        Margin="10, 0, 10, 10"
+                    >
+                            <GroupBox.Header>
+                                <Label>IPAddress:Port</Label>
+                            </GroupBox.Header>
+                            <DockPanel LastChildFill="True">
+                                <TextBox
+                                Margin="0, 0, 10, 0"
+                                Width="200"
+                                TextAlignment="Center"
+                                Text="{Binding Address, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            >
+                                </TextBox>
+
+                                <TextBox 
+                                TextAlignment="Center"
+                                Text="{Binding Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            >
+                                </TextBox>
+                            </DockPanel>
+                        </GroupBox>
+
+                        <Button
+                        Margin="10"
+                        DockPanel.Dock="Right"
+                        Content="Connect"
+                        Height="30"
+                        Width="100"
+                        Command="{Binding ConnectCommand}"
+                    >
+                        </Button>
+                        <Button
+                        Margin="10"
+                        DockPanel.Dock="Right"
+                        Content="Disconnect"
+                        Height="30"
+                        Width="100" 
+                    >
+                        </Button>
+
+                    </StackPanel>
+                </DockPanel>
+
+                <GroupBox 
+                Grid.Row="1"
+                Margin="10"
+            >
+                    <GroupBox.Header>
+                        <Label>Input</Label>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            Grid.Column="0"
+                            FontFamily="Consolas"
+                            Margin="0,0,5,0"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"
+                            Text="{Binding Data,
+                                Mode=TwoWay,
+                                UpdateSourceTrigger=PropertyChanged}"
+                        >
+                        </TextBox>
+
+                        <TextBox
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            Grid.Column="1"
+                            FontFamily="Consolas"
+                            Margin="5,0,0,0"
+                            FontStretch="Expanded"
+                            IsReadOnly="True"
+                            Text="{Binding DataHexDisplay}">
+                        </TextBox>
+                    </Grid>
+                </GroupBox>
+                <TextBox Grid.Row="2"
+                    Margin="15,0,15,10"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Text="{Binding OutputHexDisplay}"
+                    FontFamily="Consolas"
+                    FontStretch="Expanded"
+                    IsReadOnly="True"
+                >
+                </TextBox>
+                <StackPanel Grid.Row="3">
+                    <Button
+                    Content="Send"
+                    Height="30"
+                    Width="100" 
+                    Command="{Binding SendCommand}"
+                ></Button>
+                </StackPanel>
+            </Grid>
+            <Grid Margin="5, 15, 15, 20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="580"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ListBox 
+                    Grid.Row="0"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ItemsSource="{Binding History}"
+                    SelectedItem="{Binding SelectedHistoryModel, Mode=TwoWay}"
+                >
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="ToolTip" Value="{Binding DataHexDisplay}"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                [<TextBlock Text="{Binding Id}"/>]
+                                <TextBlock Text="{Binding Address}"/>:
+                                <TextBlock Text="{Binding Port}"/>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Button Grid.Row="1"
+                    Command="{Binding RestoreCommand}"
+                    Content="Restore"
+                    Height="30"
+                    Width="100" >
+                </Button>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
+</Window>
